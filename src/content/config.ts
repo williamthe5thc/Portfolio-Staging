@@ -1,7 +1,7 @@
 import { SiteConfig, Experience, Education, Competency, ProjectCategory, FAQ } from '@/types/content';
 
 export const siteConfig: SiteConfig = {
-  title: "W. Jordan Charles Portfolio",
+  title: "W. Jordan Charles's Portfolio",
   author: "W. Jordan Charles",
   description: "Instructional Designer & Learning Solutions Developer",
   slogan: "Enhancing Learning Through Design",
