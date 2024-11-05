@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "https://williamthe5thc.github.io/Portfolio-Staging/",
    
-  "scripts": {
+   "scripts": {
     "dev": "vite",
     "dev:staging": "vite --config vite.staging.config.ts",
     "build": "vite build",
@@ -14,7 +14,7 @@
     "predeploy": "npm run build",
     "predeploy:staging": "npm run build:staging",
     "deploy": "gh-pages -d dist",
-    "deploy:staging": "gh-pages --dist dist --branch gh-pages-staging --repo https://github.com/williamthe5thc/Portfolio-Staging.git --message 'Deploy to staging'",
+    "deploy:staging": "gh-pages -d dist -b gh-pages-staging -r git@github.com:williamthe5thc/Portfolio-Staging.git",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
     "type-check": "tsc --noEmit"
