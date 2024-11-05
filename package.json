@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://williamthe5thc.github.io/Portfolio/",
+  "homepage": "https://williamthe5thc.github.io/Portfolio-Staging/",
    "scripts": {
     "dev": "vite",
     "dev:staging": "vite --config vite.staging.config.ts",
