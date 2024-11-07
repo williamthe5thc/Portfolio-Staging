@@ -72,10 +72,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleClick = () => {
-    if (project.projectUrl) {
+ console.log('Project clicked:', project);
+  console.log('Project ID:', project.id);
+  console.log('Detail Page:', project.detailPage);
+  if (project.projectUrl) {
+    console.log("Opening external url");
       window.open(project.projectUrl, '_blank');
     } else if (project.detailPage) {
+    console.log("Opening internal details url");
       navigate(`/portfolio/${project.id}`);
+    }
+    else {
+    console.log('No action - missing projectUrl or detailPage flag');
     }
   };
 

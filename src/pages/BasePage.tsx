@@ -1,5 +1,5 @@
 // src/pages/BasePage.tsx
-import React from 'react';
+import React, {useEffect}  from 'react';
 import { motion } from 'framer-motion';
 import { SEO } from '@/components/shared';
 import { Container, PageHeader } from '@/components/layout';

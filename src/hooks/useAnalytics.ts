@@ -2,17 +2,27 @@
 import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
+export const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID;
+
+// Type definition for gtag
 declare global {
   interface Window {
-    gtag: (
-      command: 'event' | 'config' | 'set',
-      action: string,
-      params?: Record<string, any>
-    ) => void;
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
   }
 }
 
-export const GA_TRACKING_ID = 'G-LG6RT04XLW'; // Replace with your GA4 tracking ID
+const isGtagLoaded = () => {
+  return typeof window.gtag !== 'undefined';
+};
+
+const safeGtag = (...args: any[]) => {
+  if (isGtagLoaded()) {
+    window.gtag?.(...args);
+  } else {
+    console.debug('Google Analytics not loaded yet', ...args);
+  }
+};
 
 export const useAnalytics = () => {
   const location = useLocation();
@@ -20,10 +30,14 @@ export const useAnalytics = () => {
   // Track page views
   useEffect(() => {
     const trackPageview = () => {
-      window.gtag('event', 'page_view', {
-        page_path: location.pathname + location.search + location.hash,
-        page_title: document.title,
-      });
+      try {
+        safeGtag('event', 'page_view', {
+          page_path: location.pathname + location.search + location.hash,
+          page_title: document.title,
+        });
+      } catch (error) {
+        console.debug('Error tracking pageview:', error);
+      }
     };
 
     trackPageview();
@@ -34,21 +48,31 @@ export const useAnalytics = () => {
     eventName: string,
     eventParams?: Record<string, any>
   ) => {
-    window.gtag('event', eventName, eventParams);
+    try {
+      safeGtag('event', eventName, eventParams);
+    } catch (error) {
+      console.debug('Error tracking event:', error);
+    }
   }, []);
 
   // Track user engagement
   const trackEngagement = useCallback((
     elementId: string,
     elementType: string,
-    action: string
+    action: string,
+    additionalParams?: Record<string, any>
   ) => {
-    window.gtag('event', 'user_engagement', {
-      element_id: elementId,
-      element_type: elementType,
-      action: action,
-      page_path: location.pathname + location.search + location.hash,
-    });
+    try {
+      safeGtag('event', 'user_engagement', {
+        element_id: elementId,
+        element_type: elementType,
+        action: action,
+        page_path: location.pathname + location.search + location.hash,
+        ...additionalParams,
+      });
+    } catch (error) {
+      console.debug('Error tracking engagement:', error);
+    }
   }, [location]);
 
   // Track form submissions
@@ -57,40 +81,16 @@ export const useAnalytics = () => {
     status: 'success' | 'error',
     errorMessage?: string
   ) => {
-    window.gtag('event', 'form_submission', {
-      form_name: formName,
-      status: status,
-      error_message: errorMessage,
-    });
-  }, []);
-
-  // Track time on page
-  useEffect(() => {
-    let startTime = Date.now();
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        const timeSpent = Date.now() - startTime;
-        window.gtag('event', 'time_on_page', {
-          page_path: location.pathname + location.search + location.hash,
-          time_seconds: Math.round(timeSpent / 1000),
-        });
-      } else {
-        startTime = Date.now();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      const timeSpent = Date.now() - startTime;
-      window.gtag('event', 'time_on_page', {
-        page_path: location.pathname + location.search + location.hash,
-        time_seconds: Math.round(timeSpent / 1000),
+    try {
+      safeGtag('event', 'form_submission', {
+        form_name: formName,
+        status: status,
+        error_message: errorMessage,
       });
-    };
-  }, [location]);
+    } catch (error) {
+      console.debug('Error tracking form submission:', error);
+    }
+  }, []);
 
   return {
     trackEvent,
