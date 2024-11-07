@@ -1,16 +1,18 @@
 // src/providers/AppProviders.tsx
+import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { AnalyticsProvider } from './AnalyticsProvider';
 
-export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface AppProvidersProps {
+  children: React.ReactNode;
+}
+
+export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <HelmetProvider>
-      <Router>
-        <AnalyticsProvider>
-          <AnimatePresence mode="wait">
-            {children}
-          </AnimatePresence>
-        </AnalyticsProvider>
-      </Router>
-    </HelmetProvider>
+    <AnalyticsProvider>
+      <AnimatePresence mode="wait">
+        {children}
+      </AnimatePresence>
+    </AnalyticsProvider>
   );
 };

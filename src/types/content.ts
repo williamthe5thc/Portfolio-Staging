@@ -2,6 +2,7 @@
 import type { LucideIcon } from 'lucide-react';
 
 export interface ProjectBase {
+  detailPage?: boolean;
   id: string;
   title: string;
   description: string;
