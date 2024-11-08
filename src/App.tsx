@@ -1,4 +1,4 @@
-// src/App.tsx 
+// src/App.tsx s
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AppProviders } from './providers/AppProviders';
