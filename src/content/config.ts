@@ -1,3 +1,4 @@
+//site config can be deleted.
 import { SiteConfig, Experience, Education, Competency, ProjectCategory, FAQ } from '@/types/content';
 
 export const siteConfig: SiteConfig = {
