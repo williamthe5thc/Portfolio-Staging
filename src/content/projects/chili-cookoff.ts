@@ -8,13 +8,12 @@ const chiliCookoff: ProjectBase = {
   description: "A web-based voting application for managing and tallying votes at a community chili cook-off event",
   longDescription: "Digital solution for streamlining the voting process at a ward chili cook-off, featuring QR code access, real-time vote counting, and administrative controls",
   image: "./images/thumbnails/coming_soon.png", // Awaiting actual image
-  category: "Web Development",
+  category: 'development',
   tags: ["Web Development", "Database Design", "QR Code", "Real-time Voting", "Community Event"],
-  status: "Completed",
+  status: 'completed',
   date: "October 2024",
   tools: ["Vercel", "GitHub", "Brackets", "Claude AI"],
   methodology: "Agile development with stakeholder feedback integration",
-  learningObjectives: null,
   challenges: [
     "Creating user-friendly voting interface",
     "Implementing secure vote counting system",

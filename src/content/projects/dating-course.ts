@@ -15,7 +15,7 @@ const datingCourse: ProjectBase = {
   tools: ['Articulate Storyline', 'Articulate 360'],
   tags: ['Articulate Storyline', 'Articulate 360', 'ADDIE', 'Artificial Intelligence'],
   image: './images/projects/online-dating.jpg',
-  status: 'inProgress',
+  status: 'in-progress',
   date: 'May 2024 - Jul 2024',
   category: 'elearning',
   projectUrl: 'https://360.articulate.com/review/content/2cd611c0-132c-439a-82e9-b883037d6385/review'
