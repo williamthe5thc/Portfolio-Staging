@@ -1,183 +1,193 @@
 // src/pages/ProjectDetailPage.tsx
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { Button, BaseCard } from '@/components/ui';
-import { fadeInUp } from '@/lib/animations';
+import {
+  ArtifactList,
+  BulletSection,
+  CaseStudySection,
+  MetricGrid,
+  ProcessTimeline,
+  ProjectFacts,
+  TestimonialBlock
+} from '@/components/features/portfolio/CaseStudy';
+import { fadeInUp, staggerContainer } from '@/lib/animations';
 import { projects } from '@/content';
-import type { ProjectId, ProjectBase } from '@/types/content';
 import BasePage from './BasePage';
 
+/**
+ * A single project rendered as a case study.
+ *
+ * The section order follows how reviewers actually read: context first, then
+ * the headline outcome, then the problem and the reasoning that connects the
+ * two. Detail — objectives, challenges, tooling — sits below that for anyone
+ * who keeps scrolling. Every section is self-hiding, so projects that have
+ * not been written up yet degrade to the short description rather than
+ * showing a page of empty headings.
+ */
 const ProjectDetailPage: React.FC = () => {
-  const { projectId } = useParams<{ projectId: ProjectId }>();
+  const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
-  const initialRender = useRef(true);
-  const navigationAttempted = useRef(false);
 
-  // Store project in state to prevent re-fetching
-  const [currentProject, setCurrentProject] = useState<ProjectBase | null>(() => {
-    const found = projects.find(p => p.id === projectId);
-    console.log('Initial project lookup:', { projectId, found: !!found });
-    return found || null;
-  });
+  const project = projects.find(p => p.id === projectId);
 
-  useEffect(() => {
-    console.log('ProjectDetailPage effect running', {
-      projectId,
-      currentProject: !!currentProject,
-      initialRender: initialRender.current,
-      pathname: location.pathname
-    });
-
-    // Only run on initial render
-    if (initialRender.current) {
-      initialRender.current = false;
-
-      if (!currentProject && !navigationAttempted.current) {
-        console.log('No project found on initial render, navigating to portfolio');
-        navigationAttempted.current = true;
-        navigate('/portfolio', { replace: true });
-      }
-    }
-
-    // Cleanup
-    return () => {
-      console.log('ProjectDetailPage cleanup', { pathname: location.pathname });
-    };
-  }, [projectId, currentProject, navigate, location]);
-
-  const handleBackClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    console.log('Back button clicked, navigating to portfolio');
-    navigate('/portfolio');
-  }, [navigate]);
-
-  // Don't render anything if we don't have a project
-  if (!currentProject) {
-    console.log('No current project, rendering null');
-    return null;
+  // Unknown id: send the visitor back to the grid rather than a blank page.
+  if (!project) {
+    return <Navigate to="/portfolio" replace />;
   }
-
-  console.log('Rendering ProjectDetailPage', { 
-    projectId, 
-    currentProject: currentProject.title,
-    pathname: location.pathname 
-  });
 
   return (
     <BasePage
       seo={{
-        title: currentProject.title,
-        description: currentProject.description,
+        title: project.title,
+        description: project.description,
+        image: project.image,
+        article: true,
+        keywords: project.tags
       }}
-      title={currentProject.title}
-      subtitle={currentProject.description}
+      title={project.title}
+      subtitle={project.description}
       breadcrumbs={[
         { label: 'Portfolio', href: '/portfolio' },
-        { label: currentProject.title, href: `/portfolio/${currentProject.id}` }
+        { label: project.title, href: `/portfolio/${project.id}` }
       ]}
     >
-      <div className="py-12">
-        <Button 
-          onClick={handleBackClick}
-          variant="ghost"
-          className="mb-8"
-          icon={ArrowLeft}
+      <motion.div
+        className="py-12 space-y-8"
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+      >
+        <button
+          type="button"
+          onClick={() => navigate('/portfolio')}
+          className="inline-flex items-center gap-2 px-3 py-2 -ml-3 rounded-md text-text-secondary hover:text-primary-600 hover:bg-primary-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600"
         >
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to Portfolio
-        </Button>
+        </button>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <motion.div 
+        {project.image && (
+          <motion.img
             variants={fadeInUp}
-            className="md:col-span-2"
-          >
-            <BaseCard>
-              {currentProject.image && (
-                <img 
-                  src={currentProject.image} 
-                  alt={currentProject.title}
-                  className="w-full h-auto rounded-lg mb-6"
-                />
-              )}
-              <div className="prose max-w-none">
-                <h2>About this Project</h2>
-                <p>{currentProject.longDescription}</p>
+            src={project.image}
+            alt={project.imageAlt ?? project.title}
+            loading="lazy"
+            className="w-full max-h-[28rem] object-cover rounded-xl shadow-lg"
+          />
+        )}
 
-                {currentProject.challenges && (
-                  <>
-                    <h3>Challenges</h3>
-                    <ul>
-                      {currentProject.challenges.map((challenge, index) => (
-                        <li key={index}>{challenge}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
+        <ProjectFacts
+          role={project.role}
+          client={project.client}
+          audience={project.audience}
+          duration={project.duration}
+          team={project.team}
+          date={project.date}
+        />
 
-                {currentProject.solutions && (
-                  <>
-                    <h3>Solutions</h3>
-                    <ul>
-                      {currentProject.solutions.map((solution, index) => (
-                        <li key={index}>{solution}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            </BaseCard>
-          </motion.div>
+        <MetricGrid metrics={project.metrics} />
 
-          <motion.div variants={fadeInUp}>
-            <BaseCard>
-              <h3 className="font-semibold mb-4">Project Details</h3>
-              <dl className="space-y-3">
-                <div>
-                  <dt className="text-text-secondary">Status</dt>
-                  <dd className="font-medium">{currentProject.status}</dd>
-                </div>
-                <div>
-                  <dt className="text-text-secondary">Date</dt>
-                  <dd className="font-medium">{currentProject.date}</dd>
-                </div>
-                <div>
-                  <dt className="text-text-secondary">Category</dt>
-                  <dd className="font-medium">{currentProject.category}</dd>
-                </div>
-              </dl>
+        {project.problem && (
+          <CaseStudySection title="The Problem">
+            <p className="text-text-secondary whitespace-pre-line">{project.problem}</p>
+          </CaseStudySection>
+        )}
 
-              <div className="mt-6">
-                <h4 className="font-medium mb-2">Technologies</h4>
-                <div className="flex flex-wrap gap-2">
-                  {currentProject.tags.map(tag => (
-                    <span 
-                      key={tag}
-                      className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm"
+        {project.longDescription && (
+          <CaseStudySection title="The Solution">
+            <p className="text-text-secondary whitespace-pre-line">
+              {project.longDescription}
+            </p>
+          </CaseStudySection>
+        )}
+
+        <ProcessTimeline steps={project.process} />
+
+        <TestimonialBlock testimonial={project.testimonial} />
+
+        <ArtifactList artifacts={project.artifacts} />
+
+        <BulletSection title="Learning Objectives" items={project.learningObjectives} />
+        <BulletSection title="Challenges" items={project.challenges} />
+        <BulletSection title="How I Solved Them" items={project.solutions} />
+        <BulletSection title="Results" items={project.results} />
+
+        <motion.section
+          variants={fadeInUp}
+          aria-label="Project details"
+          className="bg-white rounded-xl shadow-lg p-6"
+        >
+          <h2 className="text-2xl font-bold text-text-primary mb-4">Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-text-light mb-2">
+                Skills &amp; Focus
+              </h3>
+              <ul className="flex flex-wrap gap-2">
+                {project.tags.map(tag => (
+                  <li
+                    key={tag}
+                    className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {project.tools?.length ? (
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-text-light mb-2">
+                  Tools
+                </h3>
+                <ul className="flex flex-wrap gap-2">
+                  {project.tools.map(tool => (
+                    <li
+                      key={tool}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
                     >
-                      {tag}
-                    </span>
+                      {tool}
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
+            ) : null}
 
-              {currentProject.projectUrl && (
-                <Button
-                  href={currentProject.projectUrl}
-                  className="w-full mt-6"
-                  icon={ExternalLink}
-                >
-                  View Live Project
-                </Button>
-              )}
-            </BaseCard>
-          </motion.div>
-        </div>
-      </div>
+            {project.methodology && (
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-text-light mb-2">
+                  Methodology
+                </h3>
+                <p className="text-text-primary">{project.methodology}</p>
+              </div>
+            )}
+
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-text-light mb-2">
+                Date
+              </h3>
+              <p className="text-text-primary">{project.date}</p>
+            </div>
+          </div>
+
+          {project.projectUrl && (
+            <a
+              href={project.projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
+            >
+              View Live Project
+              <ExternalLink className="w-4 h-4" aria-hidden="true" />
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          )}
+        </motion.section>
+      </motion.div>
     </BasePage>
   );
 };
 
-export default React.memo(ProjectDetailPage);
+export default ProjectDetailPage;

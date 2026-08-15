@@ -16,6 +16,7 @@ import { fadeInUp, staggerContainer } from '@/lib/animations';
 import { 
   siteConfig,
   projects,
+  featuredProjects,
   education,
   competencies
 } from '@/content';
@@ -38,11 +39,14 @@ const FeaturedProjectsCarousel = ({ projects }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (projects.length < 2) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % projects.length);
     }, 10000);
     return () => clearInterval(timer);
   }, [projects.length]);
+
+  if (projects.length === 0) return null;
 
   return (
     <div className="relative overflow-hidden h-96">
@@ -50,19 +54,22 @@ const FeaturedProjectsCarousel = ({ projects }) => {
         className="flex transition-transform duration-500 h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {projects.map((project, index) => (
-          <div key={index} className="w-full flex-shrink-0">
-            <BaseCard className="h-full m-2">
-              <img 
-                src="/api/placeholder/400/300"
-                alt={project.title}
-                className="w-full h-60 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                <p className="text-text-secondary">{project.description}</p>
-              </div>
-            </BaseCard>
+        {projects.map((project) => (
+          <div key={project.id} className="w-full flex-shrink-0">
+            <Link to={`/portfolio/${project.id}`} className="block h-full">
+              <BaseCard className="h-full m-2">
+                <img
+                  src={project.image}
+                  alt={project.imageAlt ?? project.title}
+                  loading="lazy"
+                  className="w-full h-60 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+                  <p className="text-text-secondary">{project.description}</p>
+                </div>
+              </BaseCard>
+            </Link>
           </div>
         ))}
       </div>
@@ -92,7 +99,7 @@ const HomePage = () => {
               />
               <div className="p-6">
                 <h1 className="text-4xl font-bold text-text-primary mb-4">
-                  Designing Learning Expereinces That Drives Results for YOU
+                  Designing Learning Experiences That Drive Results for YOU
                 </h1>
                                   <p className="text-xl text-text-secondary">
                     Building Better Learning Experiences to meet your needs
@@ -188,7 +195,9 @@ const HomePage = () => {
               Featured Projects
             </h2>
           </motion.div>
-          <FeaturedProjectsCarousel projects={projects.slice(0, 5)} />
+          <FeaturedProjectsCarousel
+            projects={featuredProjects.length ? featuredProjects : projects.slice(0, 5)}
+          />
         </div>
       </SectionContainer>
     </BasePage>
