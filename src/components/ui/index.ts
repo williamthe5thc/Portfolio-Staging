@@ -6,7 +6,7 @@ export { BackToTop } from './BackToTop.tsx';
 export { Badge } from './Badge.tsx';
 
 //export the cards
-export { BaseCard, CoreCompetency, JourneyCard, StatsGrid, PhilosophyCard } from './Card.jsx';
+export { BaseCard, CoreCompetency, JourneyCard, StatsGrid, PhilosophyCard } from './Card.tsx';
 export type {
   CoreCompetencyProps,
   JourneyItemProps,

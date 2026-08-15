@@ -20,7 +20,7 @@ const ErrorFallback = () => (
 // Preload all routes
 const preloadRoutes = () => {
   const routes = [
-    () => import('@/pages/HomePage'),
+    () => import('@/pages/Homepage'),
     () => import('@/pages/AboutPage'),
     () => import('@/pages/PortfolioPage'),
     () => import('@/pages/ContactPage'),
@@ -35,7 +35,7 @@ const preloadRoutes = () => {
 
 // Lazy load pages with better error handling and preloading
 const HomePage = React.lazy(() => 
-  import('@/pages/HomePage').catch(() => ({
+  import('@/pages/Homepage').catch(() => ({
     default: ErrorFallback
   }))
 );
