@@ -1,0 +1,11 @@
+import{j as e,m as g}from"./ui-vendor-DTGTxZJg.js";import{e as p,u as x,r as n}from"./react-vendor-OYBOM-2Z.js";import{P as h}from"./ProjectGrid-DO7cNiUs.js";import{P as j,a as y,f as b}from"./index-Dy4aTxjL.js";import{p as P}from"./info-BgHoK0Hu.js";import{p as l,f as v}from"./projects-CqrvWeYn.js";import{R as w}from"./RouteTransition-DOPZT_mh.js";import{B as C}from"./BasePage-Bm2deJi2.js";const E=["featured","all","id","learning-tech","technical"],T=()=>{var i;const[c]=p(),d=x(),[s,r]=n.useState("featured"),a=c.get("category"),o=(i=d.state)==null?void 0:i.preserveFilter;n.useEffect(()=>{if(o){r(o),window.history.replaceState({},document.title);return}a&&E.includes(a)&&r(a)},[a,o]);const m=(t=>t==="all"?l:t==="featured"?v:l.filter(f=>f.category===t))(s),u=()=>e.jsxs(g.div,{className:"flex flex-wrap justify-center gap-4 mb-12",variants:b,children:[e.jsx("button",{onClick:()=>r("featured"),className:`
+          px-6 py-3 rounded-full text-sm font-medium transition-all
+          ${s==="featured"?"bg-primary-600 text-white shadow-md":"bg-gray-100 text-gray-700 hover:bg-gray-200"}
+        `,children:"Featured Projects"}),e.jsx("button",{onClick:()=>r("all"),className:`
+          px-6 py-3 rounded-full text-sm font-medium transition-all
+          ${s==="all"?"bg-primary-600 text-white shadow-md":"bg-gray-100 text-gray-700 hover:bg-gray-200"}
+        `,children:"All Projects"}),P.map(t=>e.jsx("button",{onClick:()=>r(t.id),className:`
+            px-6 py-3 rounded-full text-sm font-medium transition-all
+            ${s===t.id?"bg-primary-600 text-white shadow-md":"bg-gray-100 text-gray-700 hover:bg-gray-200"}
+          `,children:t.label},t.id))]});return e.jsx(w,{children:e.jsx(j,{children:e.jsx(C,{seo:{title:"Portfolio",description:`Explore ${y.author}'s instructional design projects and learning solutions`},title:"Portfolio",subtitle:"Evidence-based instructional design: ADDIE methodology, learning theory application, and measurable business outcomes",className:"bg-background-light",children:e.jsxs("div",{className:"py-20",children:[e.jsx(u,{}),e.jsx(h,{projects:m,showFilters:!1,className:"mb-20"})]})})})})};export{T as default};
+//# sourceMappingURL=PortfolioPage-zVrrWlk9.js.map
